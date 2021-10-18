@@ -5,7 +5,7 @@
 // @description  Secret Sphire のコミュニティ発言画面で、プレビューをJSで処理します。
 // @author       oborodoji
 // @match        http://www.sssloxia.jp/d/rc.aspx*
-// @match        http://.sssloxia.jp/d/rc.aspx*
+// @match        http://sssloxia.jp/d/rc.aspx*
 // @icon         https://www.google.com/s2/favicons?domain=google.com
 // @grant        none
 /* load jQuery */
