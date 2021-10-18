@@ -4,7 +4,7 @@
 // @version      0.1
 // @description  Secret Sphire のコミュニティ発言画面で、プレビューをJSで処理します。
 // @author       oborodoji
-// @match        http://www.sssloxia.jp/d/rc.aspx?CNo=*
+// @match        http://www.sssloxia.jp/d/rc.aspx*
 // @icon         https://www.google.com/s2/favicons?domain=google.com
 // @grant        none
 /* load jQuery */
@@ -70,9 +70,11 @@
       if(res[i].indexOf(pattern) === 0){
         // ト書き
         pattern = /@@@/;
-        let tmp = '<tr colspan="2"><td class="String">'
+        let tmp = '<table class="WordsTable" cellspacing="0" cellpadding="0">'
+        +'<tr colspan="2"><td class="String">'
         + sstag(res[i].slice(3))
-        + '</td><tr>';
+        + '</td><tr>'
+        + '</table>';
         res[i] = tmp;
       } else {
         // アイコン付き
@@ -97,24 +99,25 @@
           str = sstag(res[i]);
         }
 
-        let tmp = '<tr><td class="Icon" rowspan="2">'
+        let tmp = '<table class="WordsTable" cellspacing="0" cellpadding="0">'
+        + '<tr><td class="Icon" rowspan="2">'
         + '<img src="' + icon + '" width="60" height="60">'
         + '</td><td class="Name"><font color="" class="F2">' + name + ' - PNo.' + Pno + '</font></td></tr>'
         + '<tr><td class="Words">'
         + '「'
         + str
         + '」'
-        + '</td></tr>';
+        + '</td></tr>'
+        + '</table>';
         res[i] = tmp;
       }
     }
 
     // テーブルタグとして連結
-    var result = '<table class="WordsTable" cellspacing="0" cellpadding="0">';
+    var result = '';
     for (let i = 0; i < res.length; i++) {
       result += res[i];
     }
-      result += '</table>';
 
     return nl2br(result);
   }
