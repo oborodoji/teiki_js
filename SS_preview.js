@@ -5,6 +5,7 @@
 // @description  Secret Sphire のコミュニティ発言画面で、プレビューをJSで処理します。
 // @author       oborodoji
 // @match        http://www.sssloxia.jp/d/rc.aspx*
+// @match        http://.sssloxia.jp/d/rc.aspx*
 // @icon         https://www.google.com/s2/favicons?domain=google.com
 // @grant        none
 /* load jQuery */
@@ -43,7 +44,7 @@
   function dispPreview(text){
     var tmp = [];
     var list = [0];
-    var pattern = /(@@@)|(@[^@]+@)/g;
+    var pattern = /(@@@\/[0-9]+\/)|(@@@)|(@[^@]+@\/[0-9]+\/)|(@[^@]+@)|(\/[0-9]+\/)/g;
     var res = [];
 
     // 文章をパーツ分け
@@ -69,13 +70,37 @@
       pattern = '@@@';
       if(res[i].indexOf(pattern) === 0){
         // ト書き
-        pattern = /@@@/;
-        let tmp = '<table class="WordsTable" cellspacing="0" cellpadding="0">'
-        +'<tr><td class="String">'
-        + sstag(res[i].slice(3))
-        + '</td><tr>'
-        + '</table>';
+        let iconno;
+        let icon;
+        let tmp;
+        if (res[i].match(/^@@@\/[0-9]+\//) !== null) {
+          // @@@/アイコン番号/ のパターン
+            console.log('run');
+          iconno = res[i].match(/\/[0-9]+\//)[0].slice(1,-1);
+          if (isNaN(iconno)) {
+            icon = '';
+          } else {
+            icon = iconlist[iconno];
+          }
+
+          tmp = '<table class="WordsTable" cellspacing="0" cellpadding="0">'
+          + '<tr><td class="Icon" rowspan="2">'
+          + '<img src="' + icon + '" width="60" height="60">'
+          + '</td></tr>'
+          + '<tr><td class="Words">'
+          + sstag(res[i].slice(iconno.length + 5))
+          + '</td></tr>'
+          + '</table>';
+        } else {
+          // @@@ のパターン
+          tmp = '<table class="WordsTable" cellspacing="0" cellpadding="0">'
+          +'<tr><td class="String">'
+          + sstag(res[i].slice(3))
+          + '</td><tr>'
+          + '</table>';
+        }
         res[i] = tmp;
+
       } else {
         // アイコン付き
         let name;
@@ -83,8 +108,8 @@
         let icon;
         let str;
 
-        pattern = '@';
-        if (res[i].indexOf(pattern) === 0) {
+        if (res[i].match(/(^@[^@]+@\/[0-9]+\/)/) !== null) {
+          // @名前@/アイコン番号/ のパターン
           name = res[i].match(/@[^@]+@/)[0].slice(1,-1);
           iconno = res[i].match(/\/[0-9]+\//)[0].slice(1,-1);
           if (isNaN(iconno)) {
@@ -94,9 +119,29 @@
           }
           str = sstag(res[i].slice(name.length + iconno.length + 4));
         } else {
-          name = $('#TBName').val();
-          icon = iconlist[0];
-          str = sstag(res[i]);
+          if (res[i].match(/^@[^@]+@/) !== null) {
+            // @名前@ のパターン
+            name = res[i].match(/@[^@]+@/)[0].slice(1,-1);
+            icon = iconlist[0];
+            str = sstag(res[i].slice(name.length + 2));
+          } else {
+            if (res[i].match(/^\/[0-9]+\//) !== null) {
+              // /アイコン番号/ のパターン
+              name = $('#TBName').val();
+              iconno = res[i].match(/\/[0-9]+\//)[0].slice(1,-1);
+              if (isNaN(iconno)) {
+                icon = '';
+              } else {
+                icon = iconlist[iconno];
+              }
+              str = sstag(res[i].slice(iconno.length + 2));
+            } else {
+              // 指定なし
+              name = $('#TBName').val();
+              icon = iconlist[0];
+              str = sstag(res[i]);
+            }
+          }
         }
 
         let tmp = '<table class="WordsTable" cellspacing="0" cellpadding="0">'
