@@ -71,7 +71,7 @@
         // ト書き
         pattern = /@@@/;
         let tmp = '<table class="WordsTable" cellspacing="0" cellpadding="0">'
-        +'<tr colspan="2"><td class="String">'
+        +'<tr><td class="String">'
         + sstag(res[i].slice(3))
         + '</td><tr>'
         + '</table>';
